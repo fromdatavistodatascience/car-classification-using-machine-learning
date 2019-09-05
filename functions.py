@@ -10,6 +10,7 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.neighbors import KNeighborsClassifier
 
 from sklearn.tree import DecisionTreeClassifier
+import matplotlib.pyplot as plt
 from sklearn.externals.six import StringIO
 from sklearn.tree import export_graphviz
 import pydotplus
@@ -131,15 +132,16 @@ def decision_tree(X_train, X_test, y_train, y_test, criterion):
     return dt, y_preds, criterion
 
 
-def plot_feature_importances(model):
+def plot_feature_importances(X_train, dt):
     """Function that plots a barchart of the individual features and 
     their corresponding feature importance."""
-    n_features = X_train_all.shape[1]
-    plt.figure(figsize=(8,8))
-    plt.barh(range(n_features), model.feature_importances_, align='center')
-    plt.yticks(np.arange(n_features), X_train_all.columns.values)
+    n_features = X_train.shape[1]
+    plt.figure(figsize=(8, 8))
+    plt.barh(range(n_features), dt.feature_importances_, align='center')
+    plt.yticks(np.arange(n_features), X_train.columns.values)
     plt.xlabel("Feature importance")
     plt.ylabel("Feature")
+    plt.title("Decision tree features and its corresponding importance")
     return plt.show()
 
 
