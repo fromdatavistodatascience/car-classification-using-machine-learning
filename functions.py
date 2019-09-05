@@ -115,3 +115,28 @@ def plot_feature_importances(model):
     plt.xlabel("Feature importance")
     plt.ylabel("Feature")
     return plt.show()
+
+# Functions for ADA/Gradient Boosting
+def adaboost(train, test, ytrain, ytest):
+    """As a performance check, calculate the mean of Adaboost 
+    cross validation score for train and test for each model
+    """
+    adaboost_clf = AdaBoostClassifier()
+    adaboost_clf.fit(train, ytrain)
+  
+    print('Mean Adaboost Cross-Val Score (k=10):')
+    cross_val_train = cross_val_score(adaboost_clf, train, ytrain, cv=10, n_jobs=1).mean()
+    cross_val_test = cross_val_score(adaboost_clf, test, ytest, cv=10, n_jobs=1).mean()
+    return print(f"train: {cross_val_train}, test: {cross_val_test}")
+
+def gbt(train, test, ytrain, ytest):
+    """As a performance check, calculate the mean of Gradient Boosting 
+    cross validation score for train and test for each model
+    """
+    gbt_clf = GradientBoostingClassifier()
+    gbt_clf.fit(train, ytrain)
+    
+    print('Mean GBT Cross-Val Score (k=10):')
+    cross_val_train = cross_val_score(gbt_clf, train, ytrain, cv=10, n_jobs=1).mean()
+    cross_val_test = cross_val_score(gbt_clf, test, ytest, cv=10, n_jobs=1).mean()
+    return print(f"train: {cross_val_train}, test: {cross_val_test}")
