@@ -1,4 +1,4 @@
-#functions to be used in the data preparation process
+# Functions to be used in the data preparation process
 
 import pandas as pd
 import numpy as np
@@ -6,6 +6,7 @@ import sklearn.metrics as metric
 
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder
+
 
 def market_columns(df):
     """Function that maps multiple entries in a column into individual columns
@@ -20,6 +21,7 @@ def market_columns(df):
         df[col] = df['Market Category'].apply(lambda x: 1 if col in x.split(',') else 0)
     df.drop('Market Category', axis=1, inplace=True)
     return df
+
 
 def onehotencode(X):
     """
@@ -40,6 +42,7 @@ def onehotencode(X):
     X_all = pd.concat([X_nonobj_df, X_obj_ohe_df], axis=1)
    
     return X_all
+
 
 def get_metrics_by_class(labels, preds, score_type='macro'):
     
@@ -96,3 +99,19 @@ def optimize_k_knn(X_train, y_train, X_test, y_test, min_k=3, max_k=10, score='m
     k_f1.sort(key=lambda f1: f1[1], reverse=True)
     
     return k_f1[0]
+
+
+# Functions for Decision Trees
+
+
+def plot_feature_importances(model):
+    """Function that plots a barchart of the individual features and their 
+    corresponding feature importance
+    """
+    n_features = X_train_all.shape[1]
+    plt.figure(figsize=(8,8))
+    plt.barh(range(n_features), model.feature_importances_, align='center')
+    plt.yticks(np.arange(n_features), X_train_all.columns.values)
+    plt.xlabel("Feature importance")
+    plt.ylabel("Feature")
+    return plt.show()
