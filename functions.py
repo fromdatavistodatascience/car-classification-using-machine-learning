@@ -49,10 +49,10 @@ def get_metrics_by_class(labels, preds, score_type='macro'):
                               'Accuracy': acc_score,
                               'F1_Score': f1_score}
         
-    metric_dict['M'] = {'Precision': metric.precision_score(labels, preds, average=class_param),
-                        'Recall': metric.recall_score(labels, preds, average=class_param),
+    metric_dict['M'] = {'Precision': metric.precision_score(labels, preds, average=score_type),
+                        'Recall': metric.recall_score(labels, preds, average=score_type),
                         'Accuracy': metric.accuracy_score(labels, preds),
-                        'F1_Score': metric.f1_score(labels, preds, average=class_param)}
+                        'F1_Score': metric.f1_score(labels, preds, average=score_type)}
         
     return pd.DataFrame.from_dict(metric_dict).transpose()
 
