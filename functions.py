@@ -7,6 +7,19 @@ import sklearn.metrics as metric
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder
 
+from sklearn.neighbors import KNeighborsClassifier
+
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.externals.six import StringIO
+from sklearn.tree import export_graphviz
+import pydotplus
+from sklearn import tree
+from IPython.display import Image
+
+from sklearn.model_selection import cross_val_score, KFold
+from sklearn.ensemble import AdaBoostClassifier, GradientBoostingClassifier
+from sklearn.metrics import accuracy_score, f1_score, confusion_matrix, classification_report 
+
 
 def market_columns(df):
     """Function that maps multiple entries in a column into individual columns
@@ -104,10 +117,23 @@ def optimize_k_knn(X_train, y_train, X_test, y_test, min_k=3, max_k=10, score='m
 # Functions for Decision Trees
 
 
+def decision_tree(X_train, X_test, y_train, y_test, criterion):
+    """ Function that takes the train test split results and a decision tree
+    criterion as inputs and returns the fitted decision tree and it's
+    corresponding confusion metrics."""
+    dt = DecisionTreeClassifier(criterion, random_state=10)
+    dt.fit(X_train, y_train)
+    y_preds = dt.predict(X_test)
+    print('\nConfusion Matrix')
+    print('----------------')
+    print(pd.crosstab(y_test, y_preds, rownames=['True'],
+                      colnames=['Predicted'], margins=True))
+    return dt, y_preds, criterion
+
+
 def plot_feature_importances(model):
-    """Function that plots a barchart of the individual features and their 
-    corresponding feature importance
-    """
+    """Function that plots a barchart of the individual features and 
+    their corresponding feature importance."""
     n_features = X_train_all.shape[1]
     plt.figure(figsize=(8,8))
     plt.barh(range(n_features), model.feature_importances_, align='center')
@@ -115,6 +141,17 @@ def plot_feature_importances(model):
     plt.xlabel("Feature importance")
     plt.ylabel("Feature")
     return plt.show()
+
+
+def tree_image(dt):
+    """ Function that takes in a fitted decision tree and returns the 
+    corresponding tree image."""
+    dot_data = StringIO()
+    export_graphviz(dt, out_file=dot_data, filled=True, rounded=True,special_characters=True)
+    graph = pydotplus.graph_from_dot_data(dot_data.getvalue())  
+
+    return Image(graph.create_png())
+
 
 # Functions for ADA/Gradient Boosting
 def adaboost(train, test, ytrain, ytest):
