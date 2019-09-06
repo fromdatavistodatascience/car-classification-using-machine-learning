@@ -8,6 +8,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder, StandardScaler, LabelBinarizer
 
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.model_selection import GridSearchCV
 
 from sklearn.tree import DecisionTreeClassifier
 import matplotlib.pyplot as plt
@@ -97,23 +98,22 @@ def get_metrics_by_class(labels, preds, score_type='macro'):
         
     return pd.DataFrame.from_dict(metric_dict).transpose()
 
-def optimize_k_knn(X_train, y_train, X_test, y_test, min_k=3, max_k=10, score='micro'):
+def optimize_knn_params(X, y,  min_k=1, max_k=10, cv=3):
     """
-    Find best k neighbor number for KNN model based on scores on testing data
-    Score is based on f1_score, for options refer to sklearn.metrics
+    Using GridSearchCV to find optimal knn parameters for k, weights and metric
+    Parameter k and cv are user inputs, while weights and metric are automatically optimized with options below
+    Returns the best parameters from grid search
     """
-    k_f1 = []
+    grid_params = {
+        'n_neighbors':list(range(min_k, max_k+1)),
+        'weights':['uniform', 'distance'],
+        'metric':['minkowski', 'euclidean', 'manhattan']
+    }
     
-    for k in range(min_k, max_k+1):
-        knn = KNeighborsClassifier(n_neighbors=k)
-        knn.fit(X_train, y_train)
-        y_hat_test = knn.predict(X_test)
-        
-        k_f1.append((k, metric.f1_score(y_test, y_hat_test, average=score)))
-        
-    k_f1.sort(key=lambda f1: f1[1], reverse=True)
+    gs_knn = GridSearchCV(KNeighborsClassifier(), param_grid=grid_params, cv=cv)
+    gs_knn.fit(X, y)
     
-    return k_f1[0]
+    return gs_knn.best_params_
 
 
 # Functions for Decision Trees
