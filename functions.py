@@ -155,6 +155,15 @@ def tree_image(dt):
     return Image(graph.create_png())
 
 
+def multiclass_roc_auc_score(y, preds, average="macro"):
+    """Function to evaluate the AUC ROC score for our multi-class problem."""
+    lb = LabelBinarizer()
+    lb.fit(y)
+    y = lb.transform(y)
+    preds = lb.transform(preds)
+    return roc_auc_score(y, preds, average=average)
+
+
 # Functions for ADA/Gradient Boosting
 def adaboost(train, test, ytrain, ytest):
     """As a performance check, calculate the mean of Adaboost 
