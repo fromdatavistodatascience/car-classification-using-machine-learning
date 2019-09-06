@@ -5,7 +5,7 @@ import numpy as np
 import sklearn.metrics as metric
 
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import OneHotEncoder
+from sklearn.preprocessing import OneHotEncoder, StandardScaler, LabelBinarizer
 
 from sklearn.neighbors import KNeighborsClassifier
 
@@ -19,7 +19,8 @@ from IPython.display import Image
 
 from sklearn.model_selection import cross_val_score, KFold
 from sklearn.ensemble import AdaBoostClassifier, GradientBoostingClassifier
-from sklearn.metrics import accuracy_score, f1_score, confusion_matrix, classification_report 
+from sklearn.metrics import (accuracy_score, f1_score, confusion_matrix,
+classification_report, roc_auc_score)
 
 
 def market_columns(df):
@@ -118,11 +119,11 @@ def optimize_k_knn(X_train, y_train, X_test, y_test, min_k=3, max_k=10, score='m
 # Functions for Decision Trees
 
 
-def decision_tree(X_train, X_test, y_train, y_test, criterion):
+def decision_tree(X_train, X_test, y_train, y_test, criterion, max_depth):
     """ Function that takes the train test split results and a decision tree
     criterion as inputs and returns the fitted decision tree and it's
     corresponding confusion metrics."""
-    dt = DecisionTreeClassifier(criterion, random_state=10)
+    dt = DecisionTreeClassifier(criterion, random_state=10, max_depth=max_depth)
     dt.fit(X_train, y_train)
     y_preds = dt.predict(X_test)
     print('\nConfusion Matrix')
