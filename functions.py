@@ -138,8 +138,12 @@ def plot_feature_importances(X_train, dt):
     their corresponding feature importance."""
     n_features = X_train.shape[1]
     plt.figure(figsize=(8, 8))
-    plt.barh(range(n_features), dt.feature_importances_, align='center')
-    plt.yticks(np.arange(n_features), X_train.columns.values)
+    features = list(zip(X_train.columns, dt.feature_importances_))
+    sorted_features = sorted(features, key=lambda x: x[1])
+    sorted_imp = [imp[1] for imp in sorted_features]
+    sorted_fts = [fts[0] for fts in sorted_features]
+    plt.barh(range(n_features), sorted_imp, align='center')
+    plt.yticks(np.arange(n_features), sorted_fts)
     plt.xlabel("Feature importance")
     plt.ylabel("Feature")
     plt.title("Decision tree features and its corresponding importance")
