@@ -139,14 +139,14 @@ def plot_feature_importances(X_train, dt):
     n_features = X_train.shape[1]
     plt.figure(figsize=(8, 8))
     features = list(zip(X_train.columns, dt.feature_importances_))
-    sorted_features = sorted(features, key=lambda x: x[1])
-    sorted_imp = [imp[1] for imp in sorted_features]
-    sorted_fts = [fts[0] for fts in sorted_features]
-    plt.barh(range(n_features), sorted_imp, align='center')
-    plt.yticks(np.arange(n_features), sorted_fts)
+    sorted_features = sorted(features, key=lambda x: x[1])   
+    sorted_imp = [imp[1] for imp in sorted_features if imp[1] > 0.01]
+    sorted_fts = [fts[0] for fts in sorted_features if fts[1] > 0.01]
+    plt.barh(range(len(sorted_imp)), sorted_imp, align='center')
+    plt.yticks(np.arange(len(sorted_fts)), sorted_fts)
     plt.xlabel("Feature importance")
     plt.ylabel("Feature")
-    plt.title("Decision tree features and its corresponding importance")
+    plt.title("Decision tree features where importance is more than 1%")
     return plt.show()
 
 
